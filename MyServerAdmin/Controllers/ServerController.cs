@@ -12,9 +12,8 @@ namespace MyServerAdmin.Controllers
         // GET: Server
         public ActionResult Index()
         {
-            IEnumerable<String> db;
-            DataBase obj = new DataBase();
-            db = obj.Test();
+            Row element = new Row();
+            element.GetAll("world","todo"); 
             return View();
         }
     }

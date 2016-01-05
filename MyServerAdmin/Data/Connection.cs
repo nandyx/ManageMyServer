@@ -11,7 +11,7 @@ namespace MyServerAdmin.Data
      public abstract class Connection
     {
         public abstract IDbConnection Open();
-        public IDbConnection ChangeDatabase(string database)
+        public IDbConnection Change(string database)
         {
             IDbConnection con;
             con = this.Open();
