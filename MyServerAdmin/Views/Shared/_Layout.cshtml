@@ -1,45 +1,78 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="ES">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--Mobile first-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-
+    @{
+        List<MyServerAdmin.Models.DataBase> databases = (List<MyServerAdmin.Models.DataBase>)Session["databases"];
+    }
+    <title>Manage My Server</title>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Nombre de aplicación", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+    <div class="container">
+        <div class="row">
+            <section class="col-xs-12 col-sm-12 col-md-3 col-gl-2">
+                <div class="principal-menu">
+                    <h1>MS</h1>
+                    <hr />
+                    <p>ManageMyServer</p>
+                        @*@using (Html.BeginForm("GetDatabases", "Server"))
+                        {
+                         <button type="button" id="launch" class="btn btn-primary btn-lg" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Launch
+                        </button>
+                        }*@
+                    <div id="output">
+                        <p>output:</p>
+                        <ul>
+                            <li>Test conexion</li>
+                            <li>loading</li>
+                            <li>...</li>
+                        </ul>
+                    </div>
+                    @if (databases != null && databases.Any())
+                                {
+                        int number = 1;
+                        foreach (MyServerAdmin.Models.DataBase item in databases)
+                        {
+                                        <ul id="database">
+                                            <li class="toggle" data-toggle="item-@number">
+                                                @item.name<i class="glyphicon glyphicon-triangle-bottom"></i>
+                                            </li>
+                                            <div id="item-@number">
+                                                @foreach (MyServerAdmin.Models.Table table in item.tables)
+                                                {
+                                                    <li><a href="@Url.Action("Show","Server", new {db = item.name, tb = table.name  })">@table.name</a></li>
+                                                }
+                                            </div>
+                                        </ul>
+                            number++;
+                        }
+                    }
+                </div>
+            </section>
+            <section class="col-xs-12 col-sm-12 col-md-9 col-gl-10" id="content">
+                <section class="alert col-lg-12">
+                    @Html.Partial("_alertas")
+                </section>
+                @RenderBody()
+            </section>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
-        </footer>
     </div>
-
+    <footer class="row">
+        <div class="col-xs-12">
+            <h6 class="text-center">Proyecto para la matería de lenguajes web. Dirigida por M.C. Mario Guillen</h6>
+            <h6 class="text-center">Elaborado por: Nandi Eliseo Legorreta Ruiz. 2015</h6>
+        </div>
+    </footer>
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script src="~/Scripts/site/layout.js"></script>
 </body>
 </html>

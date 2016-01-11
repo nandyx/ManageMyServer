@@ -14,7 +14,9 @@ namespace MyServerAdmin.Models
     {
         public string name { get; set; }
         public string value { get; set; }
-        public string type { get; set; }
+        public object type { get; set; }
+        public bool isKey { get; set; }
+
         public enum Type { Digit, Alpha, Date, boolean};
 
         public Type SetType(string value) {

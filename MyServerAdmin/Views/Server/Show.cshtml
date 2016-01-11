@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Elements";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    MyServerAdmin.Models.Table table = (MyServerAdmin.Models.Table)ViewData["collection"];
+    string database = Convert.ToString(ViewBag.database);
+    string key= String.Empty;
+    string value = String.Empty;
+    ViewData["Row"] = new  MyServerAdmin.Models.Row();
+    int indice = 0;
+}
+<h2>@table.name</h2>
+<div class="row">
+    <div class="col-xs-12">
+            @if (table.collection.Count != 0)
+            {
+                MyServerAdmin.Models.Row rw = @table.collection.First();
+                <a class="btn btn-warning btn-xs" href="#new" data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> Nuevo</a>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>i</th>
+               @foreach (var th in rw.content)
+                {
+
+                                <th>@th.name</th>
+
+                        }
+                            <th>operations</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (MyServerAdmin.Models.Row item in table.collection)
+                        {
+
+                            <tr>
+                                <td class="index">@indice</td>
+                                @foreach (MyServerAdmin.Models.Element element in item.content)
+                                {
+                                    <td>@element.value</td>
+                                    if (element.isKey) { key = element.name; value = element.value; }
+                                }
+                                <td class="text-center">
+                                    
+                                    @{
+                                        Session["Row"] = item;
+                                        Session["db"] = database;
+                                        Session["tb"] = table.name;
+                                        Session["upd"] = table;
+                                        indice++;
+                                    }
+                                    @using (Html.BeginForm("Update", "Server"))
+                                    { 
+                                    <input class="btn btn-warning btn-xs indice" name="indice" type="hidden" />
+                                    <button type="submit" id="editar" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-edit"></span>Editar</button>
+                                    }
+                                    <a class="btn btn-danger btn-xs" id="eliminar" href="@Url.Action("Delete", "Server", new { db = database, tb = table.name, key = key, value = value })" onclick="return confirm('¿Seguro que desea eliminar el registro?')"><span class="glyphicon glyphicon-remove"></span>Eliminar</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+            }
+        </div>
+    </div>
+
+@using (Html.BeginForm("New", "Server"))
+{
+    <div class="modal fade" id="new" tabindex="-1" role="dialog" aria-labelledby="nuevo" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title custom_align" id="Heading">Nuevo</h4>
+                </div>
+                <div class="modal-body">
+                    @{
+                        MyServerAdmin.Models.Row  row = (MyServerAdmin.Models.Row)Session["Row"];
+                       
+                        foreach (var item in row.content ?? new List<MyServerAdmin.Models.Element>())
+                        {
+                            <div class="form-group-sm">
+                                <label>@item.name</label>
+                                @switch (item.type.ToString())
+                                {
+                                    case "int":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" placeholder="@item.type" required>
+                                        break;
+                                    case "decimal":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" step="0.01" placeholder="@item.type" required>
+                                        break;
+                                    case "double":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" step="0.01" placeholder="@item.type" required>
+                                        break;
+                                    case "bit":
+                                        <input  id="@item.name" name="@item.name" type="checkbox" value="true" required>
+                                        break;
+                                    case "datetime":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="date" placeholder="@item.type" required>
+                                        break;
+                                    default:
+                                        <input class="form-control" id="@item.name" name="@item.name" type="text" placeholder="@item.type" required>
+                                        break;
+
+                                }
+                            </div>
+                                }
+                            
+                        }
+
+                </div>
+                <div class="modal-footer ">
+                    <button type="submit" class="btn btn-success btn-sm"  style="width: 100%;"><span class="glyphicon glyphicon-floppy-saved"></span>Crear</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+@section Scripts{
+    <script>
+        $('[id^=editar]').click(function () {
+            var item = $(this).closest("tr").find(".index").text();
+            alert(item);
+            $(".indice").val(item);
+        });
+
+    </script>
+}

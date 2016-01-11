@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Update</h2>
+
+@using (Html.BeginForm("Save", "Server", FormMethod.Post))
+{
+
+                        MyServerAdmin.Models.Row row = (MyServerAdmin.Models.Row)Session["data"];
+
+                        foreach (var item in row.content ?? new List<MyServerAdmin.Models.Element>())
+                        {
+                            <div class="form-group-sm">
+                                <label>@item.name</label>
+                                @switch (item.type.ToString())
+                                {
+                                    case "int":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" value="@item.value"  required>
+                                        break;
+                                    case "decimal":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" value="@item.value" step="0.01" required>
+                                        break;
+                                    case "double":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="number" value="@item.value" step="0.01"  required>
+                                        break;
+                                    case "bit":
+                                        <input id="@item.name" name="@item.name" type="checkbox" value="@item.value"  required>
+                                        break;
+                                    case "datetime":
+                                        <input class="form-control" id="@item.name" name="@item.name" type="date" value="@item.value" required>
+                                        break;
+                                    default:
+                                        <input class="form-control" id="@item.name" name="@item.name" type="text" value="@item.value" required>
+                                        break;
+
+                                }
+                            </div>
+    }
+    <button type="submit" class="btn btn-success btn-sm" style="width: 100%;"><span class="glyphicon glyphicon-floppy-saved"></span>Crear</button>
+}
+
+                    

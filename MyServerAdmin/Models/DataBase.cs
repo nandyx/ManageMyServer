@@ -15,6 +15,7 @@ namespace MyServerAdmin.Models
 
         public ICollection<DataBase> List() {
 
+            Table tb = new Table();
             ICollection<DataBase> coleccion= null;
             Connection c = new MysqlConecction();
             IDbConnection cnn = c.Open();
@@ -22,6 +23,10 @@ namespace MyServerAdmin.Models
             {
                 var registro = SqlMapper.Query<DataBase>(cnn, "Server_GetDatabases", null, commandType: CommandType.StoredProcedure);
                 coleccion = (ICollection<DataBase>)registro;
+                foreach (var item in coleccion)
+                {
+                    item.tables = tb.GetAll(item.name);
+                }
             }
             catch (Exception e)
             {
